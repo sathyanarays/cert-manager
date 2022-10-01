@@ -212,11 +212,6 @@ func RegisterConversions(s *runtime.Scheme) error {
 	}); err != nil {
 		return err
 	}
-	if err := s.AddGeneratedConversionFunc((*certmanager.IssuerConfig)(nil), (*IssuerConfig)(nil), func(a, b interface{}, scope conversion.Scope) error {
-		return Convert_certmanager_IssuerConfig_To_v1alpha2_IssuerConfig(a.(*certmanager.IssuerConfig), b.(*IssuerConfig), scope)
-	}); err != nil {
-		return err
-	}
 	if err := s.AddGeneratedConversionFunc((*IssuerList)(nil), (*certmanager.IssuerList)(nil), func(a, b interface{}, scope conversion.Scope) error {
 		return Convert_v1alpha2_IssuerList_To_certmanager_IssuerList(a.(*IssuerList), b.(*certmanager.IssuerList), scope)
 	}); err != nil {
@@ -1184,9 +1179,6 @@ func Convert_v1alpha2_IssuerSpec_To_certmanager_IssuerSpec(in *IssuerSpec, out *
 }
 
 func autoConvert_certmanager_IssuerSpec_To_v1alpha2_IssuerSpec(in *certmanager.IssuerSpec, out *IssuerSpec, s conversion.Scope) error {
-	if err := Convert_certmanager_IssuerConfig_To_v1alpha2_IssuerConfig(&in.IssuerConfig, &out.IssuerConfig, s); err != nil {
-		return err
-	}
 	return nil
 }
 

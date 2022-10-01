@@ -101,7 +101,7 @@ func ValidateIssuerConfig(iss *certmanager.IssuerConfig, fldPath *field.Path) (f
 			el = append(el, field.Forbidden(fldPath.Child("venafi"), "may not specify more than one issuer type"))
 		} else {
 			numConfigs++
-			el = append(el, ValidateVenafiIssuerConfig(iss.Venafi, fldPath.Child("venafi"))...)
+			el = append(el, ValidateCmpIssuerConfig(iss.CMP, fldPath.Child("venafi"))...)
 		}
 	}
 	if numConfigs == 0 {
@@ -229,6 +229,10 @@ func ValidateCAIssuerConfig(iss *certmanager.CAIssuer, fldPath *field.Path) fiel
 }
 
 func ValidateSelfSignedIssuerConfig(iss *certmanager.SelfSignedIssuer, fldPath *field.Path) field.ErrorList {
+	return nil
+}
+
+func ValidateCmpIssuerConfig(iss *certmanager.CMPIssuer, fldPath *field.Path) field.ErrorList {
 	return nil
 }
 
