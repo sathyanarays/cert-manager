@@ -33,6 +33,7 @@ import (
 	_ "github.com/cert-manager/cert-manager/pkg/controller/issuers"
 	_ "github.com/cert-manager/cert-manager/pkg/issuer/acme"
 	_ "github.com/cert-manager/cert-manager/pkg/issuer/ca"
+	_ "github.com/cert-manager/cert-manager/pkg/issuer/cmp"
 	_ "github.com/cert-manager/cert-manager/pkg/issuer/selfsigned"
 	_ "github.com/cert-manager/cert-manager/pkg/issuer/vault"
 	_ "github.com/cert-manager/cert-manager/pkg/issuer/venafi"

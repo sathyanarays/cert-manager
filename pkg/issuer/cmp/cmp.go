@@ -19,5 +19,6 @@ func New(ctx *controller.Context, issuer v1.GenericIssuer) (issuer.Interface, er
 
 // Register this Issuer with the issuer factory
 func init() {
+	fmt.Println("Registering cmp issuer")
 	issuer.RegisterIssuer(apiutil.IssuerCmp, New)
 }
