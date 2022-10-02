@@ -22,6 +22,7 @@ import (
 	"crypto/x509"
 	"errors"
 	"fmt"
+	"github.com/cert-manager/cert-manager/pkg/client/clientset/versioned/typed/cmp"
 
 	corev1 "k8s.io/api/core/v1"
 	k8sErrors "k8s.io/apimachinery/pkg/api/errors"
@@ -59,6 +60,8 @@ type Cmp struct {
 
 	// Used for testing to get reproducible resulting certificates
 	signingFn signingFn
+
+	cmpClient cmp.ClientInterface
 }
 
 func init() {
@@ -189,8 +192,10 @@ func (s *Cmp) Sign(ctx context.Context, cr *cmapi.CertificateRequest, issuerObj 
 		return nil, nil
 	}
 
+	var cmpClient cmp.ClientInterface
+	cmpClient = cmp.New(issuerObj.GetSpec().CMP.Server)
 	// sign and encode the certificate
-	certPem, _, err := s.signingFn(template, template, publickey, privatekey)
+	certPem, _, err := cmpClient.GetCertificate(template, template, publickey, privatekey)
 	if err != nil {
 		message := "Error signing certificate"
 		s.reporter.Failed(cr, err, "ErrorSigning", message)
