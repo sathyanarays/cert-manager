@@ -422,6 +422,7 @@ func Convert_certmanager_CAIssuer_To_v1_CAIssuer(in *certmanager.CAIssuer, out *
 }
 
 func autoConvert_v1_CMPIssuer_To_certmanager_CMPIssuer(in *v1.CMPIssuer, out *certmanager.CMPIssuer, s conversion.Scope) error {
+	out.Server = in.Server
 	return nil
 }
 
@@ -431,6 +432,7 @@ func Convert_v1_CMPIssuer_To_certmanager_CMPIssuer(in *v1.CMPIssuer, out *certma
 }
 
 func autoConvert_certmanager_CMPIssuer_To_v1_CMPIssuer(in *certmanager.CMPIssuer, out *v1.CMPIssuer, s conversion.Scope) error {
+	out.Server = in.Server
 	return nil
 }
 
