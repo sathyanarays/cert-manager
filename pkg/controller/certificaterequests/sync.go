@@ -79,6 +79,7 @@ func (c *Controller) Sync(ctx context.Context, cr *cmapi.CertificateRequest) (er
 	}
 
 	dbg.Info("fetching issuer object referenced by CertificateRequest")
+	fmt.Println("## Here", c.issuerType)
 
 	issuerObj, err := c.helper.GetGenericIssuer(crCopy.Spec.IssuerRef, crCopy.Namespace)
 	if k8sErrors.IsNotFound(err) {

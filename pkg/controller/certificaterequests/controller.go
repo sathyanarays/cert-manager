@@ -218,5 +218,6 @@ func (c *Controller) ProcessItem(ctx context.Context, key string) error {
 	}
 
 	ctx = logf.NewContext(ctx, logf.WithResource(log, cr))
+	fmt.Println("## Controller sign called", c.issuerType)
 	return c.Sync(ctx, cr)
 }
