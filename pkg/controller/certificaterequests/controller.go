@@ -197,6 +197,7 @@ func (c *Controller) Register(ctx *controllerpkg.Context) (workqueue.RateLimitin
 // ProcessItem is the worker function that will be called with a new key from
 // the workqueue. A key corresponds to a certificate request object.
 func (c *Controller) ProcessItem(ctx context.Context, key string) error {
+	fmt.Println("## Controller ProcessItem called", c.issuerType)
 	log := logf.FromContext(ctx)
 	dbg := log.V(logf.DebugLevel)
 
