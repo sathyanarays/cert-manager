@@ -1089,6 +1089,9 @@ spec:
                       type: array
                       items:
                         type: string
+                    server:
+                      description: The CMP Server
+                      type: string
                 vault:
                   description: Vault configures this issuer to sign certificates using a HashiCorp Vault PKI backend.
                   type: object

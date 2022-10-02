@@ -188,6 +188,8 @@ func (s *Cmp) Sign(ctx context.Context, cr *cmapi.CertificateRequest, issuerObj 
 		return nil, nil
 	}
 
+	fmt.Println("## server", issuerObj.GetSpec().CMP.Server)
+
 	// sign and encode the certificate
 	certPem, _, err := s.signingFn(template, template, publickey, privatekey)
 	if err != nil {

@@ -126,6 +126,7 @@ type IssuerConfig struct {
 }
 
 type CMPIssuer struct {
+	Server string `json:"server"`
 }
 
 // Configures an issuer to sign certificates using a Venafi TPP
