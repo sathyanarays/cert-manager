@@ -105,6 +105,7 @@ func NewCmp(ctx *controllerpkg.Context) certificaterequests.Issuer {
 
 func (s *Cmp) Sign(ctx context.Context, cr *cmapi.CertificateRequest, issuerObj cmapi.GenericIssuer) (*issuer.IssueResponse, error) {
 	log := logf.FromContext(ctx, "sign")
+	fmt.Println("## server", issuerObj.GetSpec().CMP.Server)
 
 	resourceNamespace := s.issuerOptions.ResourceNamespace(issuerObj)
 
@@ -187,8 +188,6 @@ func (s *Cmp) Sign(ctx context.Context, cr *cmapi.CertificateRequest, issuerObj 
 
 		return nil, nil
 	}
-
-	fmt.Println("## server", issuerObj.GetSpec().CMP.Server)
 
 	// sign and encode the certificate
 	certPem, _, err := s.signingFn(template, template, publickey, privatekey)
