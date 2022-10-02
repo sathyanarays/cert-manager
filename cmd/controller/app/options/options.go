@@ -36,6 +36,7 @@ import (
 	cracmecontroller "github.com/cert-manager/cert-manager/pkg/controller/certificaterequests/acme"
 	crapprovercontroller "github.com/cert-manager/cert-manager/pkg/controller/certificaterequests/approver"
 	crcacontroller "github.com/cert-manager/cert-manager/pkg/controller/certificaterequests/ca"
+	crcmpcontroller "github.com/cert-manager/cert-manager/pkg/controller/certificaterequests/cmp"
 	crselfsignedcontroller "github.com/cert-manager/cert-manager/pkg/controller/certificaterequests/selfsigned"
 	crvaultcontroller "github.com/cert-manager/cert-manager/pkg/controller/certificaterequests/vault"
 	crvenaficontroller "github.com/cert-manager/cert-manager/pkg/controller/certificaterequests/venafi"
@@ -170,6 +171,7 @@ var (
 		crapprovercontroller.ControllerName,
 		crcacontroller.CRControllerName,
 		crselfsignedcontroller.CRControllerName,
+		crcmpcontroller.CRControllerName,
 		crvaultcontroller.CRControllerName,
 		crvenaficontroller.CRControllerName,
 		// certificate controllers
@@ -201,6 +203,7 @@ var (
 		requestmanager.ControllerName,
 		readiness.ControllerName,
 		revisionmanager.ControllerName,
+		crcmpcontroller.CRControllerName,
 	}
 
 	experimentalCertificateSigningRequestControllers = []string{
