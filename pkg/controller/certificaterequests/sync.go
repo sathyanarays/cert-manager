@@ -103,6 +103,7 @@ func (c *Controller) Sync(ctx context.Context, cr *cmapi.CertificateRequest) (er
 	}
 
 	// This CertificateRequest is not meant for us, ignore
+	fmt.Println("##", issuerType, "==", c.issuerType)
 	if issuerType != c.issuerType {
 		c.log.WithValues(
 			logf.RelatedResourceKindKey, issuerType,
