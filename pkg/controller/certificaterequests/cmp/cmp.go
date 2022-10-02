@@ -156,8 +156,6 @@ func (s *Cmp) Sign(ctx context.Context, cr *cmapi.CertificateRequest, issuerObj 
 		return nil, nil
 	}
 
-	template.CRLDistributionPoints = issuerObj.GetSpec().SelfSigned.CRLDistributionPoints
-
 	if template.Subject.String() == "" {
 		// RFC 5280 (https://tools.ietf.org/html/rfc5280#section-4.1.2.4) says that:
 		// "The issuer field MUST contain a non-empty distinguished name (DN)."
