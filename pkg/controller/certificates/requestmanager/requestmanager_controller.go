@@ -22,6 +22,8 @@ import (
 	"crypto"
 	"encoding/pem"
 	"fmt"
+	"github.com/cert-manager/cert-manager/internal/controller/feature"
+	utilfeature "github.com/cert-manager/cert-manager/pkg/util/feature"
 	"strconv"
 	"time"
 
@@ -393,6 +395,11 @@ func (c *controller) createNewCertificateRequest(ctx context.Context, crt *cmapi
 			IsCA:      crt.Spec.IsCA,
 			Usages:    crt.Spec.Usages,
 		},
+	}
+
+	if utilfeature.DefaultFeatureGate.Enabled(feature.StableCertificateRequestName) {
+		cr.ObjectMeta.GenerateName = ""
+		cr.ObjectMeta.Name = apiutil.DNSSafeShortenTo52Characters(crt.Name) + "-" + fmt.Sprintf("%d", nextRevision)
 	}
 
 	cr, err = c.client.CertmanagerV1().CertificateRequests(cr.Namespace).Create(ctx, cr, metav1.CreateOptions{FieldManager: c.fieldManager})
