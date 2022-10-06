@@ -22,10 +22,11 @@ import (
 	"crypto"
 	"encoding/pem"
 	"fmt"
-	"github.com/cert-manager/cert-manager/internal/controller/feature"
-	utilfeature "github.com/cert-manager/cert-manager/pkg/util/feature"
 	"strconv"
 	"time"
+
+	"github.com/cert-manager/cert-manager/internal/controller/feature"
+	utilfeature "github.com/cert-manager/cert-manager/pkg/util/feature"
 
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
