@@ -23,11 +23,15 @@ import (
 	"testing"
 	"time"
 
+	"github.com/cert-manager/cert-manager/internal/controller/feature"
+	utilfeature "github.com/cert-manager/cert-manager/pkg/util/feature"
 	"github.com/kr/pretty"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	coretesting "k8s.io/client-go/testing"
+	"k8s.io/component-base/featuregate"
+	featuregatetesting "k8s.io/component-base/featuregate/testing"
 	fakeclock "k8s.io/utils/clock/testing"
 
 	cmapi "github.com/cert-manager/cert-manager/pkg/apis/certmanager/v1"
@@ -78,6 +82,14 @@ func TestProcessItem(t *testing.T) {
 		},
 		Spec: cmapi.CertificateSpec{CommonName: "test-bundle-2"}},
 	)
+	bundle3 := mustCreateCryptoBundle(t, &cmapi.Certificate{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: "testns",
+			Name:      "test",
+			UID:       "test",
+		},
+		Spec: cmapi.CertificateSpec{CommonName: "test-bundle-3"}},
+	)
 	fixedNow := metav1.NewTime(time.Now())
 	fixedClock := fakeclock.NewFakeClock(fixedNow.Time)
 	failedCRConditionPreviousIssuance := cmapi.CertificateRequestCondition{
@@ -97,6 +109,9 @@ func TestProcessItem(t *testing.T) {
 		// if not set, the 'namespace/name' of the 'Certificate' field will be used.
 		// if neither is set, the key will be ""
 		key string
+
+		// Featuregates to set for a particular test.
+		featuresToEnable []featuregate.Feature
 
 		// Certificate to be synced for the test.
 		// if not set, the 'key' will be passed to ProcessItem instead.
@@ -178,6 +193,29 @@ func TestProcessItem(t *testing.T) {
 			expectedActions: []testpkg.Action{
 				testpkg.NewCustomMatch(coretesting.NewCreateAction(cmapi.SchemeGroupVersion.WithResource("certificaterequests"), "testns",
 					gen.CertificateRequestFrom(bundle1.certificateRequest,
+						gen.SetCertificateRequestAnnotations(map[string]string{
+							cmapi.CertificateRequestPrivateKeyAnnotationKey: "exists",
+							cmapi.CertificateRequestRevisionAnnotationKey:   "1",
+						}),
+					)), relaxedCertificateRequestMatcher),
+			},
+		},
+		"create a CertificateRequest if none exists StableCertificateRequestName enabled)": {
+			featuresToEnable: []featuregate.Feature{feature.StableCertificateRequestName},
+			secrets: []runtime.Object{
+				&corev1.Secret{
+					ObjectMeta: metav1.ObjectMeta{Namespace: bundle3.certificate.Namespace, Name: "exists"},
+					Data:       map[string][]byte{corev1.TLSPrivateKeyKey: bundle3.privateKeyBytes},
+				},
+			},
+			certificate: gen.CertificateFrom(bundle3.certificate,
+				gen.SetCertificateNextPrivateKeySecretName("exists"),
+				gen.SetCertificateStatusCondition(cmapi.CertificateCondition{Type: cmapi.CertificateConditionIssuing, Status: cmmeta.ConditionTrue}),
+			),
+			expectedEvents: []string{`Normal Requested Created new CertificateRequest resource "test-1"`},
+			expectedActions: []testpkg.Action{
+				testpkg.NewCustomMatch(coretesting.NewCreateAction(cmapi.SchemeGroupVersion.WithResource("certificaterequests"), "testns",
+					gen.CertificateRequestFrom(bundle3.certificateRequest,
 						gen.SetCertificateRequestAnnotations(map[string]string{
 							cmapi.CertificateRequestPrivateKeyAnnotationKey: "exists",
 							cmapi.CertificateRequestRevisionAnnotationKey:   "1",
@@ -614,6 +652,12 @@ func TestProcessItem(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+
+			// Enable any features for a particular test
+			for _, feature := range test.featuresToEnable {
+				defer featuregatetesting.SetFeatureGateDuringTest(t, utilfeature.DefaultFeatureGate, feature, true)()
+			}
+
 			// Start the informers and begin processing updates
 			builder.Start()
 			defer builder.Stop()

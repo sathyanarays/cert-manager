@@ -410,8 +410,10 @@ func (c *controller) createNewCertificateRequest(ctx context.Context, crt *cmapi
 	}
 
 	c.recorder.Eventf(crt, corev1.EventTypeNormal, reasonRequested, "Created new CertificateRequest resource %q", cr.Name)
-	if err := c.waitForCertificateRequestToExist(cr.Namespace, cr.Name); err != nil {
-		return fmt.Errorf("failed whilst waiting for CertificateRequest to exist - this may indicate an apiserver running slowly. Request will be retried. %w", err)
+	if !utilfeature.DefaultFeatureGate.Enabled(feature.StableCertificateRequestName) {
+		if err := c.waitForCertificateRequestToExist(cr.Namespace, cr.Name); err != nil {
+			return fmt.Errorf("failed whilst waiting for CertificateRequest to exist - this may indicate an apiserver running slowly. Request will be retried. %w", err)
+		}
 	}
 	return nil
 }
