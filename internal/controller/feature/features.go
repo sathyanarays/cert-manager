@@ -59,7 +59,7 @@ const (
 	// See https://github.com/cert-manager/cert-manager/issues/3203 and https://github.com/cert-manager/cert-manager/issues/4424 for context.
 	LiteralCertificateSubject featuregate.Feature = "LiteralCertificateSubject"
 
-	// Alpha: v1.9.1
+	// Alpha: v1.10
 	// StableCertificateRequestName will enable generation of CertificateRequest resources with a fixed name. The name of the CertificateRequest will be a function of Certificate resource name and its revision
 	// This feature gate will disable auto-generated CertificateRequest name
 	// Github Issue: https://github.com/cert-manager/cert-manager/issues/4956
